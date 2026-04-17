@@ -440,6 +440,16 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2
 .nav-link:hover{color:var(--ink)}
 .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;border-radius:100px;font-family:var(--f);font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;transition:all .15s;border:none}
 .btn-primary{background:var(--ink);color:var(--white)}
+.hamburger{display:none;flex-direction:column;justify-content:space-between;width:24px;height:18px;background:none;border:none;cursor:pointer;padding:0;flex-shrink:0}
+.hamburger span{display:block;height:2px;background:var(--ink);border-radius:2px;transition:all .2s}
+.hamburger.open span:nth-child(1){transform:translateY(8px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
+.mobile-menu{display:none;flex-direction:column;background:var(--white);border-bottom:1px solid var(--border);padding:.5rem 1rem 1rem}
+.mobile-menu a{display:block;padding:.75rem 0;font-size:15px;font-weight:500;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--border2)}
+.mobile-menu a:last-child{border-bottom:none}
+.mobile-menu-cta{color:var(--accent) !important;font-weight:700 !important}
+.mobile-menu.open{display:flex}
 .btn-primary:hover{background:var(--accent);transform:translateY(-1px)}
 .btn-accent{background:var(--accent);color:var(--white)}
 .btn-accent:hover{background:#0F00CC;transform:translateY(-1px)}
@@ -712,13 +722,22 @@ footer{padding:2rem;border-top:1px solid var(--border);display:flex;justify-cont
 <!-- NAV -->
 <nav>
   <a class="logo" href="#">SEO<span>Biopse</span></a>
-  <div class="nav-right">
+  <div class="nav-right" id="navRight">
     <a class="nav-link" href="#why">Why SEOBiopse</a>
     <a class="nav-link" href="#proof">Proof</a>
     <a class="nav-link" href="#about">About</a>
     <a class="btn btn-primary cta-dynamic" href="#diagnose">Get My Free Diagnosis</a>
   </div>
+  <button class="hamburger" id="hamburger" aria-label="Open menu" onclick="toggleNav()">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#why" onclick="closeNav()">Why SEOBiopse</a>
+  <a href="#proof" onclick="closeNav()">Proof</a>
+  <a href="#about" onclick="closeNav()">About</a>
+  <a href="#diagnose" onclick="closeNav()" class="mobile-menu-cta">Get My Free Diagnosis →</a>
+</div>
 
 <!-- HERO -->
 <div class="hero">

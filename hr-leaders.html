@@ -136,6 +136,62 @@ footer{padding:2rem;border-top:1px solid var(--border);display:flex;justify-cont
 .footer-logo{font-weight:800;font-size:.95rem;color:var(--ink);text-decoration:none}.footer-logo span{color:var(--accent)}
 .footer-note{font-size:12px;color:var(--muted2)}
 @media(max-width:600px){h1{font-size:2rem}}
+
+.hamburger{display:none;flex-direction:column;justify-content:space-between;width:24px;height:18px;background:none;border:none;cursor:pointer;padding:0;flex-shrink:0}
+.hamburger span{display:block;height:2px;background:var(--ink);border-radius:2px;transition:all .2s}
+.hamburger.open span:nth-child(1){transform:translateY(8px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
+.mobile-menu{display:none;flex-direction:column;background:var(--white);border-bottom:1px solid var(--border);padding:.5rem 1rem 1rem}
+.mobile-menu a{display:block;padding:.75rem 0;font-size:15px;font-weight:500;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--border2)}
+.mobile-menu a:last-child{border-bottom:none}
+.mobile-menu-cta{color:var(--accent) !important;font-weight:700 !important}
+.mobile-menu.open{display:flex}
+/* ═══════════════════════════════════════
+   RESPONSIVE — Mobile / Tablet / Desktop
+═══════════════════════════════════════ */
+@media(max-width:768px){
+  nav{padding:.875rem 1.25rem}
+  .hamburger{display:flex}
+  .hero{padding:3.5rem 1.25rem 3rem}
+  .hero-cta-row{flex-direction:column;align-items:flex-start;gap:.75rem}
+  .hero-cta-row .btn-lg{width:100%;justify-content:center}
+  .proof-pills{gap:.5rem}
+  .section,.dark-bg,.form-bg,.math-bg,.opportunity-bg,.founder-bg{padding:3rem 1.25rem}
+  .pain-grid{grid-template-columns:1fr !important}
+  .math-grid,.mirror-grid,.agit-grid,.opp-grid,.proof-row{grid-template-columns:1fr !important}
+  .process-step{grid-template-columns:40px 1fr;gap:1rem}
+  .form-grid{grid-template-columns:1fr !important}
+  .field.full{grid-column:1}
+  .journey-grid{grid-template-columns:repeat(2,1fr) !important}
+}
+@media(max-width:480px){
+  nav{padding:.75rem 1rem}
+  .logo{font-size:1rem}
+  .btn-primary{padding:8px 14px;font-size:12px}
+  .hamburger{display:flex}
+  .hero{padding:2.5rem 1rem 2rem}
+  h1{font-size:clamp(1.8rem,7.5vw,2.4rem)}
+  h2{font-size:clamp(1.35rem,5.5vw,1.75rem)}
+  .hero-sub{font-size:.95rem}
+  .icp-badge{font-size:10px;padding:4px 10px}
+  .section,.dark-bg,.form-bg,.math-bg,.opportunity-bg,.founder-bg{padding:2.5rem 1rem}
+  .process-step{grid-template-columns:40px 1fr;gap:.875rem;padding:1.5rem 0}
+  .step-num{width:40px;height:40px;font-size:1rem}
+  .proof-row{grid-template-columns:repeat(2,1fr) !important}
+  .journey-grid{grid-template-columns:1fr !important}
+  .faq-q{font-size:.875rem}
+  .scarcity-text{font-size:11px}
+  .submit-btn{font-size:14px}
+  .stat-spotlight{padding:1.75rem 1.25rem}
+  .stat-big{font-size:clamp(2rem,10vw,3.5rem)}
+}
+@media(max-width:360px){
+  h1{font-size:1.7rem}
+  .hero{padding:2rem .875rem 1.75rem}
+  .section,.dark-bg,.form-bg,.math-bg,.opportunity-bg,.founder-bg{padding:2rem .875rem}
+  .proof-row{grid-template-columns:1fr !important}
+}
 </style>
 </head>
 <body>
@@ -143,7 +199,14 @@ footer{padding:2rem;border-top:1px solid var(--border);display:flex;justify-cont
 <nav>
   <a class="logo" href="/">SEO<span>Biopse</span></a>
   <a class="btn btn-primary" href="#diagnose">Fix My Employer Brand SEO</a>
+  <button class="hamburger" id="hamburger" aria-label="Open menu" onclick="toggleNav()">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#diagnose" onclick="closeNav()" class="mobile-menu-cta">Fix My Employer Brand SEO →</a>
+  <a href="/" onclick="closeNav()">← Back to SEOBiopse</a>
+</div>
 
 <div class="hero">
   <a class="back-link" href="/">← Back to SEOBiopse</a>
@@ -358,6 +421,8 @@ footer{padding:2rem;border-top:1px solid var(--border);display:flex;justify-cont
   loadSpots();
   window.submitLead=async function(e){e.preventDefault();const btn=document.querySelector('.submit-btn'),name=document.getElementById('f-name').value.trim(),email=document.getElementById('f-email').value.trim(),website=document.getElementById('f-website').value.trim(),target=document.getElementById('f-target').value.trim(),problem=document.getElementById('f-problem').value,context=document.getElementById('f-context').value.trim(),errEl=document.getElementById('f-error');if(!name||!email||!problem){errEl.textContent='Please fill all required fields.';errEl.style.display='block';return;}btn.textContent='Submitting...';btn.disabled=true;errEl.style.display='none';try{const s=await getDoc(spotsRef),cur=s.exists()?s.data().remaining:TOTAL,coll=cur<=0?'waitlist':'leads',tasks=[addDoc(collection(db,coll),{name,email,website,target,problem,context,source:'hr_page',icp:'hr_leader',timestamp:serverTimestamp()})];if(cur>0)tasks.push(updateDoc(spotsRef,{remaining:increment(-1)}));await Promise.all(tasks);document.getElementById('lead-form-wrap').style.display='none';document.getElementById('success-state').style.display='block';}catch(err){errEl.textContent='Something went wrong. DM me on LinkedIn.';errEl.style.display='block';btn.textContent='Audit My Employer Brand SEO →';btn.disabled=false;}};
 </script>
-<script>function toggleFaq(el){const i=el.closest('.faq-item'),o=i.classList.contains('open');document.querySelectorAll('.faq-item.open').forEach(x=>x.classList.remove('open'));if(!o)i.classList.add('open');}</script>
+<script>function toggleFaq(el){const i=el.closest('.faq-item'),o=i.classList.contains('open');document.querySelectorAll('.faq-item.open').forEach(x=>x.classList.remove('open'));if(!o)i.classList.add('open');}
+function toggleNav(){const h=document.getElementById('hamburger'),m=document.getElementById('mobileMenu');h.classList.toggle('open');m.classList.toggle('open');}
+function closeNav(){document.getElementById('hamburger').classList.remove('open');document.getElementById('mobileMenu').classList.remove('open');}</script>
 </body>
 </html>
